@@ -2,4 +2,8 @@ CakePhp 2.x Plugin for storing images in mysql
 
 1. Clone this plugin in your app/Plugin folder
 2. Import schema for images in Config/Schema/images.sql into your projects database
-3. Load the plugin in your project's bootstrap.php
+3. Load the plugin in your project's bootstrap.php like so:
+    CakePlugin::loadAll(array(
+        'MysqlImageStorage' => array('routes' => true),
+    ));
+4. 
