@@ -1,6 +1,6 @@
 <?php
 Router::connect('/image/:id', array(
-        'controller' => 'Images',
+        'controller' => 'images',
         'action' => 'view',
         'plugin' => 'MysqlImageStorage'
     ), array(
