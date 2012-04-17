@@ -8,51 +8,52 @@ App::uses('MysqlImageStorageAppController', 'MysqlImageStorage.Controller');
 class ImagesController extends MysqlImageStorageAppController 
 {
 
-/**
- * index method
- *
- * @return void
- */
+    /**
+     * index method
+     *
+     * @return void
+     */
 	public function index() 
     {
 		$this->Image->recursive = 0;
 		$this->set('images', $this->paginate());
 	}
 
-/**
- * view method
- *
- * @param string $id
- * @return void
- */
+    /**
+     * view method
+     *
+     * @param string $id
+     * @return void
+     */
 	public function view($id = null) 
     {
         $this->layout = null;
         $id = (int) $this->request->params['id'];
 		$this->Image->id = $id;
-		if (!$this->Image->exists()) {
-			throw new NotFoundException(__('Invalid image'));
+		if (empty($id) || !$this->Image->exists()) {
+            header("HTTP/1.0 404 Not Found");
+            exit();
 		}
 		$this->set('image', $this->Image->read(null, $id));
 	}
 
-/**
- * admin_index method
- *
- * @return void
- */
+    /**
+     * admin_index method
+     *
+     * @return void
+     */
 	public function admin_index() 
     {
 		$this->Image->recursive = 0;
 		$this->set('images', $this->paginate());
 	}
 
-/**
- * admin_view method
- *
- * @param string $id
- * @return void
- */
+    /**
+     * admin_view method
+     *
+     * @param string $id
+     * @return void
+     */
 	public function admin_view($id = null) 
     {
 		$this->Image->id = $id;
@@ -62,11 +63,11 @@ class ImagesController extends MysqlImageStorageAppController
 		$this->set('image', $this->Image->read(null, $id));
 	}
 
-/**
- * admin_add method
- *
- * @return void
- */
+    /**
+     * admin_add method
+     *
+     * @return void
+     */
 	public function admin_add() 
     {
 		if ($this->request->is('post')) {
@@ -80,12 +81,12 @@ class ImagesController extends MysqlImageStorageAppController
 		}
 	}
 
-/**
- * admin_edit method
- *
- * @param string $id
- * @return void
- */
+    /**
+     * admin_edit method
+     *
+     * @param string $id
+     * @return void
+     */
 	public function admin_edit($id = null) 
     {
 		$this->Image->id = $id;
@@ -104,12 +105,12 @@ class ImagesController extends MysqlImageStorageAppController
 		}
 	}
 
-/**
- * admin_delete method
- *
- * @param string $id
- * @return void
- */
+    /**
+     * admin_delete method
+     *
+     * @param string $id
+     * @return void
+     */
 	public function admin_delete($id = null) 
     {
 		if (!$this->request->is('post')) {
@@ -126,4 +127,5 @@ class ImagesController extends MysqlImageStorageAppController
 		$this->Session->setFlash(__('Image was not deleted'));
 		$this->redirect(array('action' => 'index'));
 	}
+
 }

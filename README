@@ -1,9 +1,22 @@
 CakePhp 2.x Plugin for storing images in mysql
 
 1. Clone this plugin in your app/Plugin folder
+
 2. Import schema for images in Config/Schema/images.sql into your projects database
+
 3. Load the plugin in your project's bootstrap.php like so:
-    CakePlugin::loadAll(array(
-        'MysqlImageStorage' => array('routes' => true),
-    ));
-4. 
+    CakePlugin::load('MysqlImageStorage' => array('routes' => true));
+
+4. Wherever you have a form you'd like your users to upload an image  you have to 
+    modify the create() form method to look like this:
+    echo $this->Form->create('Model', array('enctype' => 'multipart/form-data'));
+    also add the following line to your form helper:
+    echo $this->Form->input('photo_upload', array('type' => 'file'));
+
+5. Then in the controller's action that will be saving the form & relating the 
+    model to the photo add something like the following before you save the model:
+    $this->ImageComponent = $this->Components->load('MysqlImageStorage.Image');
+    $this->request->data['Model']['image_id'] = $this->ImageComponent->process($this->request->data['Model']);
+    ...(other stuff)...
+    $this->Model->save($this->request->data)
+    *** Replace "Model" with the model you're relating the image to
