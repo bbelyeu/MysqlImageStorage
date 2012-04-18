@@ -7,17 +7,83 @@ App::uses('MysqlImageStorageAppController', 'MysqlImageStorage.Controller');
  */
 class ImagesController extends MysqlImageStorageAppController 
 {
+    /**
+     * This method can be used to manage HABTM relationships
+     * between your apps models and related images
+     *
+     * @param string $model
+     * @param int $id
+     * @return null
+     */
+    public function admin_manage($model, $id)
+    {
+        $model = ucfirst($model);
+        App::uses($model, 'Model');
+        $instance = new $model();
+        $instance->id = (int) $id;
+        if (!$instance->exists()) {
+            throw new NotFoundException(__('Invalid request to manage images'));
+        }
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if ($instance->save($this->request->data)) {
+                $this->Session->setFlash(__('Images saved'));
+            }
+        }
+
+        $this->data = $instance->read(null, $id);
+        $this->set('model', $model);
+    }
 
     /**
-     * index method
+     * This method can be used to add new images in a HABTM relationship
+     * between your apps models and related images
      *
-     * @return void
+     * @param string $model
+     * @param int $id
+     * @return null
      */
-	public function index() 
+    public function admin_upload($model, $id)
     {
-		$this->Image->recursive = 0;
-		$this->set('images', $this->paginate());
-	}
+        $model = ucfirst($model);
+        App::uses($model, 'Model');
+        $instance = new $model();
+        $instance->id = (int) $id;
+        if (!$instance->exists()) {
+            throw new NotFoundException(__('Invalid request to manage images'));
+        }
+
+        $instanceData = $instance->read(null, $id);
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (is_array($this->request->data[$model]['photo_upload']) && !empty($this->request->data[$model]['photo_upload'])) {
+                $imgData = array();
+                $imgData['Image'] = $this->request->data[$model]['photo_upload'];
+                $imgData['Image']['image'] = addslashes(file_get_contents($imgData['Image']['tmp_name']));
+                $this->Image->create();
+                $this->Image->save($imgData);
+
+                $instance->hasAndBelongsToMany['Image']['unique'] = false;
+                $saveData = array(
+                    $model => array(
+                        'id' => (int) $id,
+                    ),
+                    'Image' => array(
+                        'id' => $this->Image->id,
+                    ),
+                );
+
+                if ($instance->save($saveData)) {
+                    $this->Session->setFlash(__('Images saved'));
+                }
+            } else {
+                $this->Session->setFlash(__("Image couldn't be uploaded"));
+            }
+        }
+
+        $this->data = $instanceData;
+        $this->set('model', $model);
+    }
 
     /**
      * view method

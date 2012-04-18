@@ -1,4 +1,5 @@
 CakePhp 2.x Plugin for storing images in mysql
+*** Parts of this plugin are jQuery dependent
 
 1. Clone this plugin in your app/Plugin folder
 
