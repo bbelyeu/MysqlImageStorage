@@ -12,7 +12,7 @@ $(document).ready(function() {
 </script>
 
 <div class="images index">
-	<h2><?php echo __('Images');?></h2>
+	<h2><?php echo $model . ' ' . __('Images');?></h2>
     <?php 
         echo $this->Form->create($model);
         echo $this->Form->input('id');
@@ -41,6 +41,6 @@ $(document).ready(function() {
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Upload Image'), "/admin/images/upload/{$this->request['model']}/{$this->request['id']}"); ?></li>
+		<li><?php echo $this->Html->link(__('Upload Image'), "/admin/images/upload/$model/{$this->request['id']}"); ?></li>
 	</ul>
 </div>
