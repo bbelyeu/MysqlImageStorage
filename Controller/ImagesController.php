@@ -104,6 +104,19 @@ class ImagesController extends MysqlImageStorageAppController
 	}
 
     /**
+     * If auth component is turned on allow index & view without authorization
+     *
+     * @return null
+     */
+    public function beforeFilter()
+    {
+        if (!empty($this->Auth)) {
+            $this->Auth->allow('view');
+        }
+        parent::beforeFilter();
+    }
+
+    /**
      * admin_index method
      *
      * @return void
