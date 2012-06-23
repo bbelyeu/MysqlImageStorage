@@ -12,7 +12,7 @@ class ImageComponent extends Component
      */
     public function process($data)
     {
-        if (is_array($data['photo_upload']) && !empty($data['photo_upload'])) {
+        if (is_array($data['photo_upload']) && !empty($data['photo_upload']) && !empty($data['photo_upload']['tmp_name'])) {
             $imgData = array();
             $imgData['Image'] = $data['photo_upload'];
             $imgData['Image']['image'] = addslashes(file_get_contents($imgData['Image']['tmp_name']));
